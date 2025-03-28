@@ -419,7 +419,7 @@ export default {
   border-radius: 5px;
   margin-top: 10px;
   padding: 0 10px;
-  font-size: 20px;
+  font-size: 15px;
 }
 
 .hash-generator {

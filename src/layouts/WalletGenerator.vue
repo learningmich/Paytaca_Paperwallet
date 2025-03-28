@@ -98,6 +98,7 @@
   <input id="passphrase" type="text" v-model="passphrase" class="passphrase-input" />
 
   <!-- Generate Button -->
+   <!--<div v-if = "isEncrypted" class = "encryption-label">BIP38 Encrypted</div>-->
   <button v-if="encryptOption" class="generate-btn">Generate</button>
 </div>
 
@@ -190,11 +191,12 @@ export default {
       addressCount: 1,
       generatedWallets: [],
       isLightMode: localStorage.getItem("lightMode") === "true" || localStorage.getItem("lightMode"),
-      isDarkMode: localStorage.getItem("darkMode") === "true" && localStorage.getItem("lightMode") !== "true",
+      isDarkMode: localStorage.getItem("darkMode") === "true" && localStorage.getItem("darkMode") !== "true",
       loading: false,
       showAdvanceSettingdropdown: false,
-      encryptOption: false,
+      encryptOption: true,
       passphrase: '',
+      //isEncrypted: false,
       designs: [
         { id: 1, image: "src/assets/posbver.png", textColor: 'black' },
         { id: 2, image: "src/assets/newbnegaver.png", textColor: 'white' },
@@ -221,6 +223,10 @@ export default {
 },
 
   methods: {
+    /*applyBIP38Encryption() {
+      this.isEncrypted = true;
+    },*/
+
     toggleAdvanceSettingdropdown() {
       this.showAdvanceSettingdropdown = !this.showAdvanceSettingdropdown;
     },
@@ -236,7 +242,8 @@ export default {
   localStorage.setItem("lightMode", this.isLightMode);
 
   // Remove both modes first, then apply the correct one
-  document.body.classList.remove("light-mode", "dark-mode");
+  document.body.classList.remove("dark-mode", "light-mode");
+  document.body.classList.add(this.isDarkMode ? "dark-mode" : "light-mode");
   if (this.isDarkMode) {
     document.body.classList.add("dark-mode");
     document.body.classList.remove("light-mode");
@@ -531,6 +538,18 @@ generateQRCode(address, amount) {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
 
+/*.encryption-label {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: red;
+  color: white;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+}*/
+
 .tooltip-container {
   position: relative;
   display: inline-block;
@@ -709,6 +728,15 @@ generateQRCode(address, amount) {
 .light-mode .wallet-container {
   background-color: rgb(239, 246, 255);
   color: black;
+}
+
+.light-mode .header-padding {
+  background-color: rgb(30 41 59 );
+  color: white;
+}
+
+.light-mode .header-padding-text{
+  color: white;
 }
 
 /* Ensure specific text updates in light mode */
