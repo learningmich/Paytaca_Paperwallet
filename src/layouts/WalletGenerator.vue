@@ -76,39 +76,9 @@
 
             <!-- BIP38 Checkbox & Link -->
 
-  <div class="advanced-settings-row">
-  <!-- BIP38 Checkbox -->
-  <input type="checkbox" v-model="encryptOption" id="bip38" />
-
-  <!-- Label + Link -->
-  <label for="bip38">
-    BIP38 Encrypt? 
-    <span class = "tooltip-container">
-    <a class="what-is-this" href="#">(What's this?)</a>
-    <span class="tooltip-text">
-    Selecting this option allows you to encrypt your wallet with a password you choose.
-    You will not be able to spend from the wallet without this password. The benefit is
-    additional security, but be careful — there is no way to recover your password if you forget it!
-  </span>
-</span>
-  </label>
-
-  <!-- Passphrase -->
-  <label for="passphrase" class="passphrase-label">Passphrase:</label>
-  <input id="passphrase" type="text" v-model="passphrase" class="passphrase-input" />
-
-  <!-- Generate Button -->
-   <!--<div v-if = "isEncrypted" class = "encryption-label">BIP38 Encrypted</div>-->
-  <button v-if="encryptOption" class="generate-btn">Generate</button>
-</div>
-
-
-  
-</div>
-</div>
-
-
-          
+            <div class="advanced-settings-row">
+            <!-- BIP38 Checkbox -->
+            <input type="checkbox" v-model="encryptOption" id="bip38" />
 
             <!-- Label + Link -->
             <label for="bip38">
@@ -282,21 +252,9 @@ export default {
       this.isDarkMode = !this.isDarkMode;
       this.isLightMode = !this.isLightMode; // Ensure only one mode is active
 
-  // Save the mode in local storage
-  localStorage.setItem("darkMode", this.isDarkMode);
-  localStorage.setItem("lightMode", this.isLightMode);
-
-  // Remove both modes first, then apply the correct one
-  document.body.classList.remove("dark-mode", "light-mode");
-  document.body.classList.add(this.isDarkMode ? "dark-mode" : "light-mode");
-  if (this.isDarkMode) {
-    document.body.classList.add("dark-mode");
-    document.body.classList.remove("light-mode");
-  } else {
-    document.body.classList.add("light-mode");
-    document.body.classList.remove("dark-mode");
-  }
-},
+      // Save the mode in local storage
+      localStorage.setItem("darkMode", this.isDarkMode);
+      localStorage.setItem("lightMode", this.isLightMode);
 
       // Remove both modes first, then apply the correct one
       document.body.classList.remove("light-mode", "dark-mode");
