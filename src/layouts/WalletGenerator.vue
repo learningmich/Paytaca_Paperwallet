@@ -76,9 +76,39 @@
 
             <!-- BIP38 Checkbox & Link -->
 
-            <div class="advanced-settings-row">
-            <!-- BIP38 Checkbox -->
-            <input type="checkbox" v-model="encryptOption" id="bip38" />
+  <div class="advanced-settings-row">
+  <!-- BIP38 Checkbox -->
+  <input type="checkbox" v-model="encryptOption" id="bip38" />
+
+  <!-- Label + Link -->
+  <label for="bip38">
+    BIP38 Encrypt? 
+    <span class = "tooltip-container">
+    <a class="what-is-this" href="#">(What's this?)</a>
+    <span class="tooltip-text">
+    Selecting this option allows you to encrypt your wallet with a password you choose.
+    You will not be able to spend from the wallet without this password. The benefit is
+    additional security, but be careful — there is no way to recover your password if you forget it!
+  </span>
+</span>
+  </label>
+
+  <!-- Passphrase -->
+  <label for="passphrase" class="passphrase-label">Passphrase:</label>
+  <input id="passphrase" type="text" v-model="passphrase" class="passphrase-input" />
+
+  <!-- Generate Button -->
+   <!--<div v-if = "isEncrypted" class = "encryption-label">BIP38 Encrypted</div>-->
+  <button v-if="encryptOption" class="generate-btn">Generate</button>
+</div>
+
+
+  
+</div>
+</div>
+
+
+          
 
             <!-- Label + Link -->
             <label for="bip38">
@@ -195,11 +225,12 @@ export default {
       addressCount: 1,
       generatedWallets: [],
       isLightMode: localStorage.getItem("lightMode") === "true" || localStorage.getItem("lightMode"),
-      isDarkMode: localStorage.getItem("darkMode") === "true" && localStorage.getItem("lightMode") !== "true",
+      isDarkMode: localStorage.getItem("darkMode") === "true" && localStorage.getItem("darkMode") !== "true",
       loading: false,
       showAdvanceSettingdropdown: false,
-      encryptOption: false,
+      encryptOption: true,
       passphrase: '',
+      //isEncrypted: false,
       designs: [
         { id: 1, image: posbver, textColor: 'black' },
         { id: 2, image: newbnegaver, textColor: 'white' },
@@ -251,9 +282,21 @@ export default {
       this.isDarkMode = !this.isDarkMode;
       this.isLightMode = !this.isLightMode; // Ensure only one mode is active
 
-      // Save the mode in local storage
-      localStorage.setItem("darkMode", this.isDarkMode);
-      localStorage.setItem("lightMode", this.isLightMode);
+  // Save the mode in local storage
+  localStorage.setItem("darkMode", this.isDarkMode);
+  localStorage.setItem("lightMode", this.isLightMode);
+
+  // Remove both modes first, then apply the correct one
+  document.body.classList.remove("dark-mode", "light-mode");
+  document.body.classList.add(this.isDarkMode ? "dark-mode" : "light-mode");
+  if (this.isDarkMode) {
+    document.body.classList.add("dark-mode");
+    document.body.classList.remove("light-mode");
+  } else {
+    document.body.classList.add("light-mode");
+    document.body.classList.remove("dark-mode");
+  }
+},
 
       // Remove both modes first, then apply the correct one
       document.body.classList.remove("light-mode", "dark-mode");
@@ -555,6 +598,19 @@ generateQRCode(address, amount) {
 
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+
+/*.encryption-label {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: red;
+  color: white;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+}*/
 
 .tooltip-container {
   position: relative;
@@ -662,7 +718,7 @@ generateQRCode(address, amount) {
 
 .spinner {
   position: absolute;
-  top: 13px;   /* Raise above input */
+  top: 18px;   /* Raise above input */
   left: 50px;   /* Position beside input */
   width: 16px;
   height: 16px;
@@ -672,11 +728,6 @@ generateQRCode(address, amount) {
   animation: spin 1s linear infinite;
 }
 
-.input-bar {
-  width: 80px;
-  padding: 4px;
-  margin-top: 10px;
-}
 
 @keyframes spin {
   to { transform: rotate(360deg); }
@@ -739,6 +790,15 @@ generateQRCode(address, amount) {
 .light-mode .wallet-container {
   background-color: rgb(239, 246, 255);
   color: black;
+}
+
+.light-mode .header-padding {
+  background-color: rgb(30 41 59 );
+  color: white;
+}
+
+.light-mode .header-padding-text{
+  color: white;
 }
 
 /* Ensure specific text updates in light mode */
@@ -905,8 +965,9 @@ font-family: 'Lexend';
 .step-label1 {
   display: flex;
   align-items: center;
-  padding: 5px;
-  background-color: rgb(51 65 85);
+  padding: 15px;
+  height: 65px;
+  background-color: rgb(51, 65, 85);
   color: white;
   cursor: pointer;
 }
@@ -914,7 +975,8 @@ font-family: 'Lexend';
 .step-label2 {
   display: flex;
   align-items: center;
-  padding: 5px;
+  padding: 15px;
+  height: 65px;
   background-color: #e05458;
   color: white;
   cursor: pointer;
@@ -923,7 +985,8 @@ font-family: 'Lexend';
 .step-label3 {
   display: flex;
   align-items: center;
-  padding: 5px;
+  padding: 15px;
+  height: 65px;
   background-color: rgb(51 65 85);
   color: white;
   cursor: pointer;
@@ -952,7 +1015,7 @@ font-family: 'Lexend';
 }
 
 .input-bar {
-  width: 30px;
+  width: 43px;
   margin-left: 1px;
   margin-top: 10px;
 }
@@ -970,7 +1033,7 @@ font-family: 'Lexend';
   display: grid;
   margin-left: 50px;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 15px;
+  gap: 10px;
   justify-content: center;
   align-items: center;
   padding: 15px;
@@ -1070,21 +1133,21 @@ font-family: 'Lexend';
 .selected-design .public-section {
   position: absolute;
   display: flex;
-  right: 79px;
-  top: 91.5px;
+  right: 89.9px;
+  top: 90px;
 
 }
 
 .selected-design .private-section {
   position: absolute;
   display: flex;
-  left: 10.5px; 
-  top: 37px;
+  left: 10.2px; 
+  top: 42px;
 }
 
 .selected-design .qr-code {
-  width: 113px; 
-  height: 113px;
+  width: 101.9px; 
+  height: 101.9px;
 }
 
 .wallet-address{
@@ -1092,7 +1155,7 @@ font-family: 'Lexend';
   font-size: 0.8rem;
   color: black;
   font-weight: bold;
-  top: 5%; 
+  top: 3%; 
   left: 71%; 
   transform: translateX(-50%);
   white-space: nowrap;
@@ -1100,12 +1163,14 @@ font-family: 'Lexend';
 }
 
 .private-key {
-  position: absolute;
+  font-weight: 90%;
   color: white;
-  font-size: clamp(8px, 1.1vw, 11px); /* Responsive text size */
-  top: 25%; /* Keeps it in the same relative position */
-  left: 16%; /* Centers it relative to the wallet */
-  transform: translateX(-50%) rotate(-45.5deg); /* Keeps it locked in place */
+  position: absolute;
+  font-size: 10.9px;
+  top: 18.5vh; 
+  left: 18%;
+  right: 36.3%;
+  transform: translateX(-53%) translateY(90%) rotate(-45.7deg); 
   white-space: nowrap;
   max-width: 90%;
   overflow: hidden;
@@ -1127,15 +1192,15 @@ font-family: 'Lexend';
   width: fit-content; 
   margin-left: 130px;
   margin-right: -50px;
-  margin-top: -10px;
+  margin-top: 19px;
   margin-bottom: 10px;
 }
 
 .wallet-padding {
-  margin-top: -20px;
-  padding-top: -80px;
-  padding: -80px;
-  padding-bottom: 1px;
+  margin-top: -50px;
+  padding-top: 0px;
+  padding: 0%;
+  padding-bottom: 0%;
 }
 
 /* Responsive Styles */
@@ -1295,8 +1360,8 @@ font-family: 'Lexend';
 
 @media (max-width: 1440px) {
   .selected-design .public-section {
-    right: 11.8%; 
-    top: 14.5%;
+    right: 9.5%; 
+    top: 15.5%;
   }
 
   .selected-design .private-section {
@@ -1324,4 +1389,3 @@ font-family: 'Lexend';
   }
 }
 </style>
-
