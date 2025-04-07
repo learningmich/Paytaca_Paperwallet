@@ -63,53 +63,44 @@
           
           <div class="loader-wrapper">
             <div v-if="loading" class="spinner"></div>
-              <input class="input-bar" type="number" v-model.number="addressCount" @input="generateMultipleKeys" />
+              <input class="input-bar" type="text" v-model.number="addressCount" @keyup.enter="generateMultipleKeys" />
              <button class="encryption" @click="toggleAdvanceSettingdropdown">
                   {{ showAdvanceSettingdropdown ? 'Hide Advanced Settings' : 'Advance Settings' }}
             </button>  
             </div>
              
       
-             <div class="dropdown-wrapper">
-  <div v-if="showAdvanceSettingdropdown" class="dropdown-panel">
-  <p><strong>Check the BIP38 option, enter a passphrase, and click "Generate" to create an encrypted wallet</strong></p>
+            <div class="dropdown-wrapper">
+            <div v-if="showAdvanceSettingdropdown" class="dropdown-panel">
+            <p><strong>Check the BIP38 option, enter a passphrase, and click "Generate" to create an encrypted wallet</strong></p>
 
-  <!-- BIP38 Checkbox & Link -->
+            <!-- BIP38 Checkbox & Link -->
 
-  <div class="advanced-settings-row">
-  <!-- BIP38 Checkbox -->
-  <input type="checkbox" v-model="encryptOption" id="bip38" />
+            <div class="advanced-settings-row">
+            <!-- BIP38 Checkbox -->
+            <input type="checkbox" v-model="encryptOption" id="bip38" />
 
-  <!-- Label + Link -->
-  <label for="bip38">
-    BIP38 Encrypt? 
-    <span class = "tooltip-container">
-    <a class="what-is-this" href="#">(What's this?)</a>
-    <span class="tooltip-text">
-    Selecting this option allows you to encrypt your wallet with a password you choose.
-    You will not be able to spend from the wallet without this password. The benefit is
-    additional security, but be careful — there is no way to recover your password if you forget it!
-  </span>
-</span>
-  </label>
+            <!-- Label + Link -->
+            <label for="bip38">
+              BIP38 Encrypt? 
+              <span class = "tooltip-container">
+              <a class="what-is-this" href="#">(What's this?)</a>
+              <span class="tooltip-text">
+              Selecting this option allows you to encrypt your wallet with a password you choose.
+              You will not be able to spend from the wallet without this password. The benefit is
+              additional security, but be careful — there is no way to recover your password if you forget it!
+            </span>
+          </span>
+            </label>
+            <!-- Passphrase -->
+            <label for="passphrase" class="passphrase-label">Passphrase:</label>
+            <input id="passphrase" type="text" v-model="passphrase" class="passphrase-input" />
 
-  <!-- Passphrase -->
-  <label for="passphrase" class="passphrase-label">Passphrase:</label>
-  <input id="passphrase" type="text" v-model="passphrase" class="passphrase-input" />
-
-  <!-- Generate Button -->
-  <button v-if="encryptOption" class="generate-btn">Generate</button>
-</div>
-
-
-  
-</div>
-</div>
-
-
-          
-
-
+            <!-- Generate Button -->
+            <button v-if="encryptOption" @click="generateMultipleKeys()" class="generate-btn">Generate</button>
+          </div> 
+        </div>
+          </div>
           <!-- Paper Wallet Container -->
           <div v-if="customAmount && addressCount" class="paper-wallet-container">
             <div class="paper-wallet">
@@ -142,7 +133,7 @@
                     <div class="qr-section private-section">
                       <img :src="wallet.qrCodePrivate" alt="Private QR Code" class="qr-code private-qr" />
                     </div>
-                    <p class="private-key">{{ wallet.wif }}</p>
+                    <p class="private-key">{{ wallet.encryptedWIF ? wallet.encryptedWIF : wallet.wif }}</p>
                   </div>
                   </div>
                 </div>
@@ -165,12 +156,25 @@
 <script>
 import CryptoJS from 'crypto-js';
 import QRCode from "qrcode";
-import { Buffer } from "buffer";
+import { Buffer } from 'buffer/';
 import secp256k1 from 'secp256k1';
 import bs58 from "bs58";
 import cashaddr from "cashaddrjs";
 import html2canvas from 'html2canvas';
-
+import bip38 from '@asoltys/bip38'
+import posbver from 'src/assets/posbver.png';
+import newbnegaver from 'src/assets/newbnegaver.png';
+import posrver from 'src/assets/posrver.png';
+import newrnegaver from 'src/assets/newrnegaver.png';
+import gradbluever from 'src/assets/gradbluever.png';
+import flipgradbluever from 'src/assets/flipgradbluever.png';
+import gradredver from 'src/assets/gradredver.png';
+import flipgradredver from 'src/assets/flipgradredver.png';
+import gradredbluever from 'src/assets/gradredbluever.png';
+import flipgradposver from 'src/assets/flipgradposver.png';
+import purenegaver from 'src/assets/purenegaver.png';
+import blackverb from 'src/assets/blackverb.png';
+import blackverr from 'src/assets/blackverr.png';
 
 export default {
   data() {
@@ -178,6 +182,7 @@ export default {
       paymentDetails: "",
       privateKeyWIF: "",
       publicKeyHex: "",
+      encryptedWIF: "",
       bitcoinCashAddress: "",
       qrCodeDataPublic: "",
       qrCodeDataPrivate: "",
@@ -196,56 +201,70 @@ export default {
       encryptOption: false,
       passphrase: '',
       designs: [
-        { id: 1, image: "src/assets/posbver.png", textColor: 'black' },
-        { id: 2, image: "src/assets/newbnegaver.png", textColor: 'white' },
-        { id: 3, image: "src/assets/posrver.png", textColor: 'black' },
-        { id: 4, image: "src/assets/newrnegaver.png", textColor: 'white' },
-        { id: 5, image: "src/assets/gradbluever.png", textColor: 'black' },
-        { id: 6, image: "src/assets/flipgradbluever.png", textColor: 'white' },
-        { id: 7, image: "src/assets/gradredver.png", textColor: 'black' },
-        { id: 7, image: "src/assets/gradredver.png", textColor: 'black' },
-        { id: 8, image: "src/assets/flipgradredver.png", textColor: 'white' },
-        { id: 9, image: "src/assets/gradredbluever.png", textColor: 'black' },
-        { id: 10, image: "src/assets/flipgradposver.png", textColor: 'black' },
-        { id: 11, image: "src/assets/purenegaver.png", textColor: 'white' },
-        { id: 12, image: "src/assets/blackverb.png", textColor: 'white' },
-        { id: 13, image: "src/assets/blackverr.png", textColor: 'white' },
+        { id: 1, image: posbver, textColor: 'black' },
+        { id: 2, image: newbnegaver, textColor: 'white' },
+        { id: 3, image: posrver, textColor: 'black' },
+        { id: 4, image: newrnegaver, textColor: 'white' },
+        { id: 5, image: gradbluever, textColor: 'black' },
+        { id: 6, image: flipgradbluever, textColor: 'white' },
+        { id: 7, image: gradredver, textColor: 'black' },
+        { id: 8, image: flipgradredver, textColor: 'white' },
+        { id: 9, image: gradredbluever, textColor: 'black' },
+        { id: 10, image: flipgradposver, textColor: 'black' },
+        { id: 11, image: purenegaver, textColor: 'white' },
+        { id: 12, image: blackverb, textColor: 'white' },
+        { id: 13, image: blackverr, textColor: 'white' },
       ],
     };
   },
 
-  async created() {
-  await this.generateNewKeys(); // Generate new keys upon component creation
-  document.body.classList.toggle("dark-mode", this.isDarkMode);
-  document.body.classList.toggle("light-mode", this.isLightMode);
-},
-
-  methods: {
-    toggleAdvanceSettingdropdown() {
-      this.showAdvanceSettingdropdown = !this.showAdvanceSettingdropdown;
+    async created() {
+      document.body.classList.toggle("dark-mode", this.isDarkMode);
+      document.body.classList.toggle("light-mode", this.isLightMode);
     },
 
+      methods: {
+    // Toggles the dropdown for advanced settings
+      toggleAdvanceSettingdropdown() {
+      this.showAdvanceSettingdropdown = !this.showAdvanceSettingdropdown;
 
+      if (this.showAdvanceSettingdropdown) {
+        this.generatedWallets = [];
+        this.firstWallet = [];  // Clear existing wallets (including the static one)
+      }else{
+        this.resetWallet();  // Call the method to regenerate wallet without encryption
+      }
+    },
+    resetWallet() {
+      this.showAdvanceSettingdropdown = false;  // Close advanced settings
+      this.encryptOption = false;  // Uncheck encryption
+      this.passphrase = '';  // Clear passphrase
+      this.encryptedWIF = null;  // Reset encrypted WIF
+      this.originalWIF = null;  // Ensure original WIF is reset
+      this.generatedWallets = [];  // Clear generated wallets
+
+      // Re-generate the original WIF
+      this.generateMultipleKeys();  // Call the method to regenerate wallet without encryption
+    },
     //Dark Mode Method
     toggleDarkMode() {
-  this.isDarkMode = !this.isDarkMode;
-  this.isLightMode = !this.isLightMode; // Ensure only one mode is active
+      this.isDarkMode = !this.isDarkMode;
+      this.isLightMode = !this.isLightMode; // Ensure only one mode is active
 
-  // Save the mode in local storage
-  localStorage.setItem("darkMode", this.isDarkMode);
-  localStorage.setItem("lightMode", this.isLightMode);
+      // Save the mode in local storage
+      localStorage.setItem("darkMode", this.isDarkMode);
+      localStorage.setItem("lightMode", this.isLightMode);
 
-  // Remove both modes first, then apply the correct one
-  document.body.classList.remove("light-mode", "dark-mode");
-  if (this.isDarkMode) {
-    document.body.classList.add("dark-mode");
-    document.body.classList.remove("light-mode");
-  } else {
-    document.body.classList.add("light-mode");
-    document.body.classList.remove("light-mode");
-  }
-},
-
+      // Remove both modes first, then apply the correct one
+      document.body.classList.remove("light-mode", "dark-mode");
+      if (this.isDarkMode) {
+        document.body.classList.add("dark-mode");
+        document.body.classList.remove("light-mode");
+      } else {
+        document.body.classList.add("light-mode");
+        document.body.classList.remove("dark-mode");
+      }
+    },
     // Computes SHA-256 hash for a given data input
     async sha256(data = '', encoding = 'utf8') {
       let buffer;
@@ -328,34 +347,42 @@ export default {
       const privateKeyHex = this.binToHex(privateKey);
       const publicKeyHex = this.binToHex(publicKey);
 
-      const privateKeyHash = await this.sha256(privateKeyHex, 'hex');
-      const publicKeyHash = await this.sha256(publicKeyHex, 'hex');
-
       const sha256Hash = await this.sha256(publicKeyHex, 'hex');
       const ripemdHash = this.ripemd160(this.hexToBin(sha256Hash));
-      const extendedKey = new Uint8Array([0x80, ...privateKey, 0x01]);
+
+      // Generate WIF format (for non-encrypted use)
+      const extendedKey = new Uint8Array([0x80, ...privateKey, 0x01]); // 0x01 for compressed flag
       const hashWif1 = await this.sha256(extendedKey, 'hex');
       const hashWif2 = await this.sha256(this.hexToBin(hashWif1), 'hex');
       const checksumWif = this.hexToBin(hashWif2).slice(0, 4);
       const wifKey = new Uint8Array([...extendedKey, ...checksumWif]);
       const finalWIF = this.binToBase58(wifKey);
 
+      let encryptedWIF = null;
+
+      if (this.encryptOption && this.passphrase) {
+        encryptedWIF = bip38.encrypt(Buffer.from(privateKey), true, this.passphrase);
+        console.log("Encrypted WIF:", encryptedWIF);
+      }
+
       return {
         privateKey: privateKeyHex,
-        privateKeyHash,
         publicKey: publicKeyHex,
-        publicKeyHash,
         address: this.encodeCashAddress({
-          prefix: 'bitcoincash',
-          type: 'P2PKH',
+          prefix: "bitcoincash",
+          type: "P2PKH",
           payload: ripemdHash,
         }),
-        wif: finalWIF
+        wif: finalWIF,
+        encryptedWIF: encryptedWIF || null,
       };
     },
     // Generates multiple Bitcoin Cash addresses based on user input
     async generateMultipleKeys() {
-      this.loading = true; // Start loader
+      this.loading = true;
+      if (this.encryptOption) {
+        this.wallets = [];
+      }
     const MAX_WALLETS = 10; // Set your desired wallet limit
 
     // Ensure addressCount starts at 1
@@ -372,7 +399,6 @@ export default {
 
     // If no wallets exist, create the first static wallet
     if (this.generatedWallets.length === 0) {
-
         const firstWallet = await this.generatePrivateKey();
         if (!firstWallet || !firstWallet.address || !firstWallet.wif) {
             return;
@@ -380,7 +406,7 @@ export default {
 
         try {
             firstWallet.qrCodePublic = await QRCode.toDataURL(`${firstWallet.address}?amount=${this.customAmount}`);
-            firstWallet.qrCodePrivate = await QRCode.toDataURL(firstWallet.wif);
+            firstWallet.qrCodePrivate = await QRCode.toDataURL(firstWallet.encryptedWIF ? firstWallet.encryptedWIF : firstWallet.wif);
         } catch (error) {
             console.error("QR Code generation failed for static wallet:", error);
         }
@@ -416,7 +442,7 @@ export default {
 
         try {
             wallet.qrCodePublic = await QRCode.toDataURL(`${wallet.address}?amount=${this.customAmount}`);
-            wallet.qrCodePrivate = await QRCode.toDataURL(wallet.wif);
+            wallet.qrCodePrivate = await QRCode.toDataURL(wallet.encryptedWIF ? wallet.encryptedWIF : wallet.wif);
         } catch (error) {
             console.error(`QR Code generation failed for wallet #${this.generatedWallets.length + 1}:`, error);
         }
