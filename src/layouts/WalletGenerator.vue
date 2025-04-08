@@ -6,7 +6,7 @@
     <header class="landing-header">
       <img src="../assets/paytaca.jpg" alt="Paytaca Logo" class="site-logo" />
       <a href="https://www.paytaca.com/#home" target="_blank" class="site-title">Paytaca.com</a>
-      
+
       <!-- Dark Mode Toggle Button -->
       <button class="toggle-button" @click="toggleDarkMode">
   <span v-if="isDarkMode">🌙</span>
@@ -52,24 +52,24 @@
           <label class="custom">Custom BCH Amount:</label>
           <select v-model="paymentDetails" @change="updatePublicQRCodes" class="dropdown">
             <option disabled value="">Amount</option>
-            <option v-for="amount in [0.0001, 0.001, 0.005, 0.05, 0.1, 0.25, 0.5, 0.75, 1, 5, 10]" 
-                    :key="amount" 
+            <option v-for="amount in [0.0001, 0.001, 0.005, 0.05, 0.1, 0.25, 0.5, 0.75, 1, 5, 10]"
+                    :key="amount"
                     :value="amount">
               {{ amount }} BCH
             </option>
           </select>
 
           <label class="address">Addresses to generate:</label>
-          
+
           <div class="loader-wrapper">
             <div v-if="loading" class="spinner"></div>
               <input class="input-bar" type="text" v-model.number="addressCount" @keyup.enter="generateMultipleKeys" />
              <button class="encryption" @click="toggleAdvanceSettingdropdown">
                   {{ showAdvanceSettingdropdown ? 'Hide Advanced Settings' : 'Advance Settings' }}
-            </button>  
+            </button>
             </div>
-             
-      
+
+
             <div class="dropdown-wrapper">
             <div v-if="showAdvanceSettingdropdown" class="dropdown-panel">
             <p><strong>Check the BIP38 option, enter a passphrase, and click "Generate" to create an encrypted wallet</strong></p>
@@ -82,7 +82,7 @@
 
             <!-- Label + Link -->
             <label for="bip38">
-              BIP38 Encrypt? 
+              BIP38 Encrypt?
               <span class = "tooltip-container">
               <a class="what-is-this" href="#">(What's this?)</a>
               <span class="tooltip-text">
@@ -98,7 +98,7 @@
 
             <!-- Generate Button -->
             <button v-if="encryptOption" @click="generateMultipleKeys()" class="generate-btn">Generate</button>
-          </div> 
+          </div>
         </div>
           </div>
           <!-- Paper Wallet Container -->
@@ -114,7 +114,7 @@
           <!-- Design Image Display -->
           <div v-if="generatedWallets.length" class="wallets-container" id="printable-wallet">
             <div v-for="(wallet, index) in generatedWallets" :key="index" class="selected-design-container">
-              <h3 class = "wallet-padding" v-if="index > 0"></h3> 
+              <h3 class = "wallet-padding" v-if="index > 0"></h3>
               <div class="selected-design">
                 <div class="design-image-container" :style="{ color: wallet.design.textColor }">
                   <img :src="wallet.design.image" alt="Selected Design" class="design-image" />
@@ -189,10 +189,10 @@ export default {
       qrCodeDataPublic: "",
       qrCodeDataPrivate: "",
       privateKeyHash: "",
-      publicKeyHash: "", 
-      dropdownOpen: true,     
-      activeStep: null,       
-      selectedDesign: null,   
+      publicKeyHash: "",
+      dropdownOpen: true,
+      activeStep: null,
+      selectedDesign: null,
       customAmount: null,
       addressCount: 1,
       generatedWallets: [],
@@ -313,7 +313,7 @@ export default {
       );
     },
 
-    
+
     encodeCashAddress({ prefix, type, payload }) {
       return cashaddr.encode(prefix, type.toUpperCase(), payload);
     },
@@ -484,7 +484,7 @@ export default {
 
     try {
       wallet.qrCodePublic = await QRCode.toDataURL(qrDataPublic, {
-        errorCorrectionLevel: 'L', 
+        errorCorrectionLevel: 'L',
       });
       console.log(`QR Code updated for ${cleanAddress}:`, wallet.qrCodePublic);
     } catch (error) {
@@ -496,7 +496,7 @@ generateQRCode(address, amount) {
     return `https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=bitcoincash:${address}?amount=${amount}`;
   },
     // Converts the wallet section into an image and opens a print window
-    async printWallet() { 
+    async printWallet() {
       const printable = document.getElementById("printable-wallet");
       if (!printable) {
         console.error("Printable wallet section not found!");
@@ -548,10 +548,10 @@ generateQRCode(address, amount) {
       this.selectedDesign = design;
       this.generatedWallets.forEach(wallet => {
       wallet.design = { ...design };
-      }); 
+      });
       this.dropdownOpen = false;
       this.activeStep = 2;
-      this.addressCount = 1; 
+      this.addressCount = 1;
       this.generateMultipleKeys();
     },
   },
@@ -573,7 +573,7 @@ generateQRCode(address, amount) {
   left: 220.9px;
   transform: translateX(-50%) rotate(-180deg);
   border: 1.5px solid #E2E8F0;
-  padding: 5px 5px; 
+  padding: 5px 5px;
   border-radius: 5px;
   background-color: white;
 }
@@ -680,8 +680,8 @@ generateQRCode(address, amount) {
 
 .spinner {
   position: absolute;
-  top: 40%; 
-  left: 17%; 
+  top: 40%;
+  left: 17%;
   width: 16px;
   height: 16px;
   border: 2px solid #ccc;
@@ -701,7 +701,7 @@ generateQRCode(address, amount) {
 }
 
 /* Dark Mode */
-.dark-mode .landing-header {  
+.dark-mode .landing-header {
   background-color: #2c3440;
   color: white;
 }
@@ -782,7 +782,7 @@ generateQRCode(address, amount) {
   align-items: center;
   justify-content: center;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  transition: background 0.3s ease, transform 0.2s;                                                     
+  transition: background 0.3s ease, transform 0.2s;
   position: fixed;
 }
 
@@ -803,29 +803,30 @@ generateQRCode(address, amount) {
 
 
 .landing-container {
-  position: fixed; 
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh; 
+  height: 100vh;
   background-color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   font-family: "Poppins", sans-serif;
-  overflow-y: auto; 
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
 .landing-header {
   background-color: white;
-  width: 98.8%;
+  width: 100%;
   padding: 1% 1%;
   top: 0;
   left: 0;
+  z-index: 1000;
   display: flex;
-  align-items: center; 
-  gap: 10px; 
+  align-items: center;
+  gap: 10px;
   box-sizing: border-box;
   position: fixed;
 }
@@ -966,16 +967,15 @@ font-family: 'Lexend';
 
 .design-grid {
   display: grid;
-  margin-left: 50px;
+  margin-left: 20px;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 15px;
   justify-content: center;
   align-items: center;
-  padding: 15px;
 }
 
 .design-preview {
-  position: relative; 
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -984,8 +984,8 @@ font-family: 'Lexend';
 
 .design-preview img {
   width: 100%;
-  height: auto; 
-  object-fit: contain; 
+  height: auto;
+  object-fit: contain;
   display: block;
 }
 
@@ -1011,7 +1011,7 @@ font-family: 'Lexend';
 
 .select-button {
   font-family: 'Lexend', sans-serif;
-  font-size: 100px; 
+  font-size: 100px;
   position: absolute;
   bottom: 90px;
   background: rgb(51 65 85);
@@ -1031,8 +1031,8 @@ font-family: 'Lexend';
 }.selected-design-container {
   position: relative;
   position: relative;
-  width: 100%;   
-  height: 100%; 
+  width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -1075,7 +1075,7 @@ font-family: 'Lexend';
 .selected-design .private-section {
   position: absolute;
   display: flex;
-  left: 10.2px; 
+  left: 10.2px;
   top: 42px;
 }
 
@@ -1084,8 +1084,8 @@ font-family: 'Lexend';
   font-size: 0.8rem;
   color: black;
   font-weight: bold;
-  top: 3%; 
-  left: 71%; 
+  top: 3%;
+  left: 71%;
   transform: translateX(-50%);
   white-space: nowrap;
   max-width: 90%
@@ -1096,10 +1096,10 @@ font-family: 'Lexend';
   color: white;
   position: absolute;
   font-size: 10.9px;
-  top: 17vh; 
+  top: 17vh;
   left: 18%;
   right: 36.3%;
-  transform: translateX(-53%) translateY(90%) rotate(-45.7deg); 
+  transform: translateX(-53%) translateY(90%) rotate(-45.7deg);
   white-space: nowrap;
   max-width: 90%;
   overflow: hidden;
@@ -1110,16 +1110,16 @@ font-family: 'Lexend';
   position: absolute;
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   text-align: center;
-  font-size: 19px; 
+  font-size: 19px;
   font-weight: bold;
   color: #DAA425;
-  padding: 29%; 
+  padding: 29%;
   background-color: transparent;
   border-radius: 5px;
   margin: 30px auto;
-  width: fit-content; 
+  width: fit-content;
   margin-left: 130px;
   margin-right: -50px;
   margin-top: -10px;
@@ -1147,9 +1147,7 @@ font-family: 'Lexend';
 
 /* 1440 above  */
 @media (min-width: 1440px) {
-  .landing-container {
-    max-width: 100vw;
-  }
+  .landing-container,
   .landing-header {
     width: 100vw;
   }
@@ -1165,7 +1163,8 @@ font-family: 'Lexend';
     margin-right: 4%;
   }
   .design-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    height: 100vh;
     padding-right: 6%;
     gap: 1.5%;
   }
@@ -1173,7 +1172,7 @@ font-family: 'Lexend';
     width: 55vw;
   }
   .selected-design .qr-code {
-  width: 6rem; 
+  width: 6rem;
   height: 6rem;
 }
   .selected-design .public-section {
@@ -1185,7 +1184,7 @@ font-family: 'Lexend';
     top: 7%;
   }
   .private-key {
-    top: 21%; 
+    top: 21%;
     left: 18%;
     right: 36%;
     font-size: clamp(0.7em, 0.9em, 0.6em);
@@ -1209,7 +1208,7 @@ font-family: 'Lexend';
   }
 }
 
-@media (min-width: 1364px) and (max-width: 1439px) {
+@media (max-width: 1439px) {
   .landing-container {
     max-width: 100vw;
   }
@@ -1225,7 +1224,7 @@ font-family: 'Lexend';
     margin-right: 4%;
   }
   .design-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     padding-right: 6%;
     gap: 1.5%;
   }
@@ -1233,7 +1232,7 @@ font-family: 'Lexend';
     width: 56.5vw;
   }
   .selected-design .qr-code {
-  width: 6.2rem; 
+  width: 6.2rem;
   height: 5.8rem;
   }
   .selected-design .public-section {
@@ -1245,7 +1244,7 @@ font-family: 'Lexend';
     top: 7%;
   }
   .private-key {
-    top: 20%; 
+    top: 20%;
     left: 20%;
     right: 30%;
     font-size: clamp(0.6rem, 0.6em, 0.4rem);
@@ -1268,7 +1267,7 @@ font-family: 'Lexend';
   }
 }
 
-@media (min-width: 1024px) and (max-width: 1363px) {
+@media (max-width: 1363px) {
   .landing-container {
     max-width: 100vw;
   }
@@ -1285,15 +1284,16 @@ font-family: 'Lexend';
     font-size: 0.9rem;
   }
   .design-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     padding-right: 6%;
+    height: 100vh;
     gap: 1.5%;
   }
   .dropdown-panel {
     width: 60.5vw;
   }
   .selected-design .qr-code {
-  width: 5rem; 
+  width: 5rem;
   height: 5rem;
   }
   .selected-design .public-section {
@@ -1305,7 +1305,7 @@ font-family: 'Lexend';
     top: 7%;
   }
   .private-key {
-    top: 20%; 
+    top: 20%;
     left: 20%;
     right: 30%;
     font-size: clamp(0.5rem, 0.6em, 0.5rem);
@@ -1322,33 +1322,46 @@ font-family: 'Lexend';
     margin-bottom: -8%;
   }
   .select-button {
+    top: 50px;
     font-size: 0.8rem;
     line-height: 2%;
     margin-bottom: 4%;
   }
 }
 
-@media (min-width: 425px) and (max-width: 767px) {
-  .landing-container {
-    width: 100vw;
-    max-width: 1000vw;
-  }
-  .landing-header {
-    width: 100vw;
-  }
+@media (max-width: 768px) {
+  .light-mode .landing-container,
+  .light-mode .landing-header,
+  .dark-mode .landing-header,
+  .light-mode .wallet-container
   .site-title {
-    font-size: 0.9rem;
+    width: 100% !important;
+  }
+  .site-title{
+    font-size: 14px;
+  }
+  .site-logo{
+    height: 25px;
+  }
+  .toggle-button{
+    font-size: 15px;
+    width: 30px;
+    height: 30px;
   }
   .header-padding {
-    padding-top: 11%;
+    padding-top: 5%;
+    padding-bottom: 20px;
   }
   .header-padding-text {
-    font-size: 1.3rem;
-    line-height: 20%;
-    padding-bottom: 3%;
+    font-size: 1rem;
+    padding-bottom: 20px;
+  }
+  .paper5-logo{
+    width: 30px;
+    height: 30px;
+    margin: 0;
   }
   .wallet-description {
-    margin-top: 1%;
     font-size: 1.2rem;
   }
   .wallet-container {
@@ -1357,20 +1370,31 @@ font-family: 'Lexend';
   .step-label1 .step-text,
   .step-label2 .step-text,
   .step-label3 .step-text {
-    height: 3vh;
     font-size: 0.8rem;
   }
+  .selected-design .qr-code{
+    width: 4rem;
+    height: 4rem;
+  }
+  .private-qr{
+    margin-top: -6px;
+    margin-left: -1px;
+  }
+  .public-qr{
+    margin-right: -33px;
+    margin-top: -3px;
+  }
   .design-grid {
-    padding-right: 20%;
-    padding-left: 1%;
-    grid-template-columns: repeat(1, 1fr);
+    display: grid;
+    height: 100vh;
+    grid-template-columns: repeat(3, 1fr);
   }
   .select-button {
     font-size: 0.6rem;
     line-height: 2%;
     margin-bottom: 1%;
     top: 40%;
-    width: 40vw;
+    width: 150px;
     height: 1vh;
   }
   .customization-section .custom,
@@ -1401,15 +1425,14 @@ font-family: 'Lexend';
     right: 16%;
   }
   .private-key {
-    font-size: 0.2rem;
-    top: 30%;
-    margin-left: -8%;
-    margin-right: 5%;
+    font-size: 0.38rem;
+    top: 20%;
+    margin-right: 3%;
   }
   .wallet-address {
-    font-size: 0.3rem;
-    margin-left: -3%;
+    font-size: 0.4rem;
     margin-top: 3%;
+    right: -25px;
   }
   .bch-amount {
     font-size: 0.4rem;
@@ -1422,6 +1445,261 @@ font-family: 'Lexend';
     margin-bottom: -35%;
     padding: 0.7% 0.7%;
   }
-} 
+}
 
+@media (max-width: 600px) {
+  .light-mode .landing-container,
+  .light-mode .wallet-container
+  .site-title {
+    width: 100% !important;
+  }
+  .wallet-description {
+    margin-bottom: 0;
+  }
+  .light-mode .landing-header,
+  .dark-mode .landing-header {
+    width: 100% !important;
+    padding: 5px;
+  }
+  .site-title{
+    font-size: 12px;
+  }
+  .site-logo{
+    height: 20px;
+    width: 20px;
+  }
+  .toggle-button{
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+  }
+  .header-padding {
+    padding-top: 5%;
+    padding-bottom: 10px;
+  }
+  .header-padding-text {
+    font-size: .7rem;
+    padding-bottom: 10px;
+  }
+  .paper5-logo{
+    width: 20px;
+    height: 20px;
+    margin: 0;
+  }
+  .wallet-description {
+    font-size: 1rem;
+  }
+  .wallet-container {
+    width: 90vw;
+  }
+  .step-label1 .step-text,
+  .step-label2 .step-text,
+  .step-label3 .step-text {
+    font-size: 0.6rem;
+  }
+  .selected-design .qr-code{
+    width: 3rem;
+    height: 3rem;
+  }
+  .private-qr{
+    margin-top: -1px;
+    margin-left: -3px;
+  }
+  .public-qr{
+    margin-right: -25px;
+    margin-top: 0;
+  }
+  .design-grid {
+    display: grid;
+    height: 100vh;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .design-preview{
+    width: 110px;
+  }
+  .select-button {
+    font-size: 0.6rem;
+    line-height: 2%;
+    margin-bottom: 1%;
+    top: 40%;
+    width: 100px;
+    height: 1vh;
+  }
+  .customization-section .custom,
+  .customization-section .dropdown,
+  .customization-section .address,
+  .customization-section .input-bar,
+  .customization-section .encryption {
+    font-size: 0.5rem;
+  }
+  .dropdown-panel {
+    width: 80vw;
+    height: 23vh;
+  }
+  .dropdown-panel .strong,
+  .dropdown-panel .advanced-settings-row {
+    font-size: 0.5rem;
+    bottom: 10%;
+  }
+  .generate-btn {
+    font-size: 0.5rem;
+  }
+  .selected-design .private-section {
+    top: 8.9%;
+    left: 1.5%;
+  }
+  .selected-design .public-section {
+    top: 17%;
+    right: 16%;
+  }
+  .private-key {
+    font-size: 0.25rem;
+    top: 22%;
+    margin-right: 1%;
+  }
+  .wallet-address {
+    font-size: 0.25rem;
+    margin-top: 5%;
+    right: 6px;
+  }
+  .bch-amount {
+    font-size: 0.4rem;
+    margin-left: -4%;
+    margin-bottom: 11%;
+  }
+  .bip38-label {
+    font-size: 0.2rem;
+    margin-left: -48.5%;
+    margin-bottom: -35%;
+    padding: 0.7% 0.7%;
+  }
+}
+
+@media (max-width: 320px){
+  .light-mode .landing-container,
+  .light-mode .wallet-container
+  .site-title {
+    width: 100% !important;
+  }
+  .wallet-description {
+    margin-bottom: 0;
+  }
+  .light-mode .landing-header,
+  .dark-mode .landing-header {
+    width: 100% !important;
+    padding: 5px;
+  }
+  .site-title{
+    font-size: 12px;
+  }
+  .site-logo{
+    height: 20px;
+    width: 20px;
+  }
+  .toggle-button{
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+  }
+  .header-padding {
+    padding-top: 5%;
+    padding-bottom: 10px;
+  }
+  .header-padding-text {
+    font-size: .7rem;
+    padding-bottom: 10px;
+  }
+  .paper5-logo{
+    width: 20px;
+    height: 20px;
+    margin: 0;
+  }
+  .wallet-description {
+    font-size: 1rem;
+  }
+  .wallet-container {
+    width: 90vw;
+  }
+  .step-label1 .step-text,
+  .step-label2 .step-text,
+  .step-label3 .step-text {
+    font-size: 0.6rem;
+  }
+  .selected-design .qr-code{
+    width: 2rem;
+    height: 2rem;
+  }
+  .private-qr{
+    margin-top: 2px;
+    margin-left: 0;
+  }
+  .public-qr{
+    margin-right: -17px;
+    margin-top: 2px;
+  }
+  .design-grid {
+    display: grid;
+    height: 100vh;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .design-preview{
+    width: 110px;
+  }
+  .select-button {
+    font-size: 0.6rem;
+    line-height: 2%;
+    margin-bottom: 1%;
+    top: 40%;
+    width: 100px;
+    height: 1vh;
+  }
+  .customization-section .custom,
+  .customization-section .dropdown,
+  .customization-section .address,
+  .customization-section .input-bar,
+  .customization-section .encryption {
+    font-size: 0.5rem;
+  }
+  .dropdown-panel {
+    width: 80vw;
+    height: 23vh;
+  }
+  .dropdown-panel .strong,
+  .dropdown-panel .advanced-settings-row {
+    font-size: 0.5rem;
+    bottom: 10%;
+  }
+  .generate-btn {
+    font-size: 0.5rem;
+  }
+  .selected-design .private-section {
+    top: 8.9%;
+    left: 1.5%;
+  }
+  .selected-design .public-section {
+    top: 17%;
+    right: 16%;
+  }
+  .private-key {
+    font-size: 0.18rem;
+    top: 22%;
+    margin-right: 1%;
+  }
+  .wallet-address {
+    font-size: 0.2rem;
+    margin-top: 5%;
+    right: -18px;
+  }
+  .bch-amount {
+    font-size: 0.4rem;
+    margin-left: -4%;
+    margin-bottom: 11%;
+  }
+  .bip38-label {
+    font-size: 0.2rem;
+    margin-left: -48.5%;
+    margin-bottom: -35%;
+    padding: 0.7% 0.7%;
+  }
+}
 </style>
