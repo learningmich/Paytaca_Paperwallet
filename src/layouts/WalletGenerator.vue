@@ -105,7 +105,8 @@
           <div v-if="customAmount && addressCount" class="paper-wallet-container">
             <div class="paper-wallet">
               <div class="paper-wallet-content">
-                <div class="generated-addresses"></div>
+                <div class="generated-addresses">
+                </div>
               </div>
             </div>
           </div>
@@ -122,6 +123,7 @@
                     <div class="bch-amount">
                       <p>{{ wallet.customAmount }} BCH</p> <!-- Show the correct amount per wallet -->
                     </div>
+                    <p v-if="bip38Enabled" class="bip38-label">BIP38 ENCRYPTED</p>
 
                     <!-- Public Address QR -->
                     <div class="qr-section public-section">
@@ -198,7 +200,7 @@ export default {
       isDarkMode: localStorage.getItem("darkMode") === "true" && localStorage.getItem("darkMode") !== "true",
       loading: false,
       showAdvanceSettingdropdown: false,
-      encryptOption: true,
+      encryptOption: false,
       passphrase: '',
       //isEncrypted: false,
       designs: [
@@ -383,6 +385,9 @@ export default {
       this.loading = true;
       if (this.encryptOption) {
         this.wallets = [];
+        this.bip38Enabled = true;
+      }else{
+        this.bip38Enabled = false;
       }
     const MAX_WALLETS = 10; // Set your desired wallet limit
 
@@ -556,19 +561,22 @@ generateQRCode(address, amount) {
 
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
 
-/*.encryption-label {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: red;
-  color: white;
+.bip38-label {
   font-weight: bold;
-  padding: 5px 10px;
+  font-size: 7.6px;
+  color: rgb(51, 65, 85);
+  text-align: center;
+  margin-bottom: 10px;
+  position: absolute;
+  bottom: 183px;
+  left: 220.9px;
+  transform: translateX(-50%) rotate(-180deg);
+  border: 1.5px solid #E2E8F0;
+  padding: 5px 5px; 
   border-radius: 5px;
-}*/
+  background-color: white;
+}
 
 .tooltip-container {
   position: relative;
@@ -586,15 +594,11 @@ generateQRCode(address, amount) {
   padding: 8px 10px;
   border-radius: 5px;
   font-size: 0.85em;
-
-  /* Positioning */
   position: absolute;
   z-index: 1;
-  top: 125%; /* Below the link */
+  top: 125%;
   left: 50%;
   transform: translateX(-50%);
-
-  /* Optional Arrow */
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -676,8 +680,8 @@ generateQRCode(address, amount) {
 
 .spinner {
   position: absolute;
-  top: 18px;   /* Raise above input */
-  left: 50px;   /* Position beside input */
+  top: 40%; 
+  left: 17%; 
   width: 16px;
   height: 16px;
   border: 2px solid #ccc;
@@ -686,15 +690,18 @@ generateQRCode(address, amount) {
   animation: spin 1s linear infinite;
 }
 
+.input-bar {
+  width: 60px;
+  padding: 4px;
+  margin-top: 10px;
+}
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-
-
 /* Dark Mode */
-.dark-mode .landing-header {  /* Fixed Typo */
+.dark-mode .landing-header {  
   background-color: #2c3440;
   color: white;
 }
@@ -719,7 +726,6 @@ generateQRCode(address, amount) {
   color: black;
 }
 
-
 .dark-mode .wallet-container {
   background-color: rgb(239, 246, 255);
   color: white;
@@ -733,8 +739,6 @@ generateQRCode(address, amount) {
 .dark-mode .step-label2 {
   background-color: #E63946;
 }
-
-
 
 /* Ensure specific text updates in dark mode */
 .dark-mode .site-title,
@@ -750,15 +754,6 @@ generateQRCode(address, amount) {
   color: black;
 }
 
-.light-mode .header-padding {
-  background-color: rgb(30 41 59 );
-  color: white;
-}
-
-.light-mode .header-padding-text{
-  color: white;
-}
-
 /* Ensure specific text updates in light mode */
 .light-mode .site-title,
 .light-mode .wallet-description{
@@ -769,8 +764,6 @@ generateQRCode(address, amount) {
   background-color: #E2E8F0;
   color: black;
 }
-
-
 
 
 .toggle-button {
@@ -789,7 +782,8 @@ generateQRCode(address, amount) {
   align-items: center;
   justify-content: center;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  transition: background 0.3s ease, transform 0.2s;
+  transition: background 0.3s ease, transform 0.2s;                                                     
+  position: fixed;
 }
 
 .toggle-button:hover {
@@ -808,8 +802,6 @@ generateQRCode(address, amount) {
 
 
 
-
-
 .landing-container {
   position: fixed; 
   top: 0;
@@ -825,52 +817,37 @@ generateQRCode(address, amount) {
   overflow-x: hidden;
 }
 
-
 .landing-header {
   background-color: white;
-  width: calc(100% - 15px);
-  padding: 15px 30px;
-  position: fixed;
+  width: 98.8%;
+  padding: 1% 1%;
   top: 0;
   left: 0;
   display: flex;
   align-items: center; 
   gap: 10px; 
-  z-index: 1000;
   box-sizing: border-box;
+  position: fixed;
 }
 
 .header-padding {
-width: 100%;
-height: 140px;
-background-color: rgb(30 41 59 );
-margin-top: 1px;
-margin-bottom: 100px;
-display: flex;
-padding: 5px 30px;
-align-items: center;
-text-align: center;
-justify-content: center;
-}
-
-/*.darkmode-header {
   width: 100%;
-  height: 140%;
+  height: 70px;
   background-color: rgb(30 41 59 );
-  margin-top: 1px;
-  margin-bottom: 100px;
+  margin-top: 4%;
+  margin-bottom: 4%;
   display: flex;
-  padding: 5px 30px;
+  padding: 5px 50px;
   align-items: center;
   text-align: center;
   justify-content: center;
-}*/
+}
 
 .header-padding-text {
 font-size: 25px;
 font-weight: bold;
 color: white;
-margin-top: 70px;
+margin-top: 25px;
 font-family: 'Lexend';
 }
 
@@ -880,10 +857,10 @@ height: 25px;
 }
 
 .paper5-logo {
-width: 50px;
-height: 50px;
+width: 45px;
+height: 45px;
 margin-right:5px;
-margin-top: 50px;
+margin-top: 10px;
 }
 
 .site-title {
@@ -923,31 +900,31 @@ font-family: 'Lexend';
 .step-label1 {
   display: flex;
   align-items: center;
-  padding: 15px;
-  height: 65px;
-  background-color: rgb(51, 65, 85);
+  padding: 3.5%;
+  background-color: rgb(51 65 85);
   color: white;
   cursor: pointer;
+  height: 30px;
 }
 
 .step-label2 {
   display: flex;
   align-items: center;
-  padding: 15px;
-  height: 65px;
+  padding: 3.5%;
   background-color: #e05458;
   color: white;
   cursor: pointer;
+  height: 30px;
 }
 
 .step-label3 {
   display: flex;
   align-items: center;
-  padding: 15px;
-  height: 65px;
+  padding: 3.5%;
   background-color: rgb(51 65 85);
   color: white;
   cursor: pointer;
+  height: 30px;
 }
 .step-text {
   margin-left: 10px;
@@ -973,7 +950,7 @@ font-family: 'Lexend';
 }
 
 .input-bar {
-  width: 43px;
+  width: 30px;
   margin-left: 1px;
   margin-top: 10px;
 }
@@ -991,7 +968,7 @@ font-family: 'Lexend';
   display: grid;
   margin-left: 50px;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 10px;
+  gap: 15px;
   justify-content: center;
   align-items: center;
   padding: 15px;
@@ -1049,7 +1026,6 @@ font-family: 'Lexend';
   transition: opacity 0.4s ease-in-out, transform 0.5s ease-in-out;
 }
 
-
 .design-preview:hover .select-button {
   opacity: 2;
 }.selected-design-container {
@@ -1103,11 +1079,6 @@ font-family: 'Lexend';
   top: 42px;
 }
 
-.selected-design .qr-code {
-  width: 101.9px; 
-  height: 101.9px;
-}
-
 .wallet-address{
   position: absolute;
   font-size: 0.8rem;
@@ -1125,7 +1096,7 @@ font-family: 'Lexend';
   color: white;
   position: absolute;
   font-size: 10.9px;
-  top: 18.5vh; 
+  top: 17vh; 
   left: 18%;
   right: 36.3%;
   transform: translateX(-53%) translateY(90%) rotate(-45.7deg); 
@@ -1136,11 +1107,12 @@ font-family: 'Lexend';
 }
 
 .bch-amount {
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center; 
   text-align: center;
-  font-size: 25px; 
+  font-size: 19px; 
   font-weight: bold;
   color: #DAA425;
   padding: 29%; 
@@ -1150,200 +1122,306 @@ font-family: 'Lexend';
   width: fit-content; 
   margin-left: 130px;
   margin-right: -50px;
-  margin-top: 19px;
+  margin-top: -10px;
   margin-bottom: 10px;
+  transform: translateX(-50%) rotate(-180deg);
+  bottom: -30px;
+  left: 90px;
 }
 
 .wallet-padding {
-  margin-top: -50px;
-  padding-top: 0px;
+  margin-top: 0%;
+  margin-bottom: -0.2%;
+  padding-top: 0%;
   padding: 0%;
   padding-bottom: 0%;
 }
 
-/* Responsive Styles */
-@media (max-width: 1440px) {
-  .design-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  }
+/*         Start Media            */
 
-  .design-preview {
-    max-width: 300px;
-  }
-}
 
-@media (max-width: 424px) {
+
+
+
+
+
+/* 1440 above  */
+@media (min-width: 1440px) {
+  .landing-container {
+    max-width: 100vw;
+  }
   .landing-header {
-    padding: 1px 30px;
+    width: 100vw;
   }
-
-  .header-padding-text {
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 1440px) {
-  .design-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .select-button {
-    font-size: 12px;
-    padding: 8px 16px;
-  }
-
-  .wallet-description {
-    font-size: 25px;
-    margin-top: -40px;
-  }
-
   .wallet-container {
-    width: 100%;
-    padding: 10px;
+    padding-right: 1.2%;
+    margin-bottom: 90%;
+    max-width: 58vw;
   }
-
-  .step-text {
-    font-size: 16px;
+  .wallet-description {
+    margin-top: 0%;
   }
-
-  .select-button {
-    font-size: 13px;
-    padding: 6px 12px;
+  .loader-wrapper {
+    margin-right: 4%;
   }
-}
-
-/* Small devices (phones, 425px - 767px) */
-@media (max-width: 767px) {
-  .landing-header {
-    padding: 10px 20px;
+  .design-grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding-right: 6%;
+    gap: 1.5%;
+  }
+  .dropdown-panel {
+    width: 55vw;
   }
   .selected-design .qr-code {
-  width: 30px; 
-  height: 30px;
-  }
+  width: 6rem; 
+  height: 6rem;
+}
   .selected-design .public-section {
-  position: absolute;
-  display: flex;
-  right: 57px; 
-  top: 40px;
+    right: 9.9%;
+    top: 16%;
   }
-
   .selected-design .private-section {
-    position: absolute;
-    display: flex;
-    left: 18.9px;   
-    top: 41.5px;
+    left: 1.5%;
+    top: 7%;
   }
-  .wallet-address{
-  position: absolute;
-  font-size: 20px;
-  top: 3%;
-  left: 67.9%; 
-  transform: translateX(-50%); 
-  white-space: nowrap;
-  }
-
   .private-key {
-  position: absolute;
-  font-size: clamp(9px, 1.2vw, 12px); 
-  top: 30.5%; 
-  left: 50%; 
-  transform: translateX(-50%) rotate(-45.7deg); 
-  white-space: nowrap;
-}
-  
+    top: 21%; 
+    left: 18%;
+    right: 36%;
+    font-size: clamp(0.7em, 0.9em, 0.6em);
+  }
+  .wallet-address {
+    font-size: clamp(0.8em, 0.9em, 0.6em );
+    left: 75%;
+  }
   .bch-amount {
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-    text-align: center;
-    font-size: 40px; 
-    font-weight: bold;
-    color: #10b01b;
-    padding: 29%; 
-    background-color: transparent;
-    border-radius: 5px;
-    margin: 30px auto;
-    width: fit-content; 
-    margin-left: -13.5%;
-    margin-top: -10.5%;
-    transform: rotate(-45.7deg);
+    margin-left: 16.5%;
+    margin-right: -10%;
   }
-
-  .wallet-description {
-    font-size: 20px;
-    margin-top: -60px;
+  .bip38-label {
+    margin-left: -0.5%;
+    margin-bottom: -2%;
   }
-
-  .wallet-container {
-    width: 80%;
-    padding: 15px;
-  }
-
-  .design-grid {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-  }
-
   .select-button {
-    font-size: 12px;
-    padding: 8px 14px;
+    font-size: 0.8rem;
+    line-height: 2%;
+    margin-bottom: 4%;
   }
 }
 
-/* Medium devices (tablets, 768px - 1023px) */
-@media (max-width: 1023px) {
-  .landing-header {
-    padding: 15px 30px;
+@media (min-width: 1364px) and (max-width: 1439px) {
+  .landing-container {
+    max-width: 100vw;
   }
-
   .wallet-container {
-    width: 70%;
+    padding-right: 1.2%;
+    margin-bottom: 90%;
+    width: 61vw;
   }
-
+  .wallet-description {
+    margin-top: 0%;
+  }
+  .loader-wrapper {
+    margin-right: 4%;
+  }
   .design-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    grid-template-columns: repeat(2, 1fr);
+    padding-right: 6%;
+    gap: 1.5%;
   }
-}
-
-/* Large devices (desktops, 1024px and up) */
-@media (min-width: 1024px) {
-  .wallet-container {
-    width: 60%;
+  .dropdown-panel {
+    width: 56.5vw;
   }
-
-  .design-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+  .selected-design .qr-code {
+  width: 6.2rem; 
+  height: 5.8rem;
   }
-}
-
-@media (max-width: 1440px) {
   .selected-design .public-section {
-    right: 9.5%; 
-    top: 15.5%;
+    right: 9.5%;
+    top: 16%;
   }
-
   .selected-design .private-section {
-    left: 1.17%;
-    top: 35px;
+    left: 1.5%;
+    top: 7%;
   }
-
-  .selected-design .qr-code {
-    width: min(14vw, 100px); 
-    height: min(14vw, 100px);
+  .private-key {
+    top: 20%; 
+    left: 20%;
+    right: 30%;
+    font-size: clamp(0.6rem, 0.6em, 0.4rem);
+  }
+  .wallet-address {
+    font-size: clamp(0.8rem, 1rem, 0.8rem );
+  }
+  .bch-amount {
+    margin-left: 17%;
+    margin-right: -10%;
+  }
+  .bip38-label {
+    margin-left: -0.5%;
+    margin-bottom: -2%;
+  }
+  .select-button {
+    font-size: 0.8rem;
+    line-height: 2%;
+    margin-bottom: 4%;
   }
 }
 
-@media (max-width: 768px) {
-  .selected-design .public-section,
-  .selected-design .private-section {
-    position: static;
-    text-align: center;
-    margin-bottom: 20px;
+@media (min-width: 1024px) and (max-width: 1363px) {
+  .landing-container {
+    max-width: 100vw;
   }
-
+  .wallet-container {
+    padding-right: 1.2%;
+    margin-bottom: 90%;
+    width: 66vw;
+  }
+  .wallet-description {
+    margin-top: 0%;
+  }
+  .loader-wrapper {
+    margin-right: 4%;
+    font-size: 0.9rem;
+  }
+  .design-grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding-right: 6%;
+    gap: 1.5%;
+  }
+  .dropdown-panel {
+    width: 60.5vw;
+  }
   .selected-design .qr-code {
-    width: min(40vw, 90px);
-    height: min(40vw, 90px);
+  width: 5rem; 
+  height: 5rem;
+  }
+  .selected-design .public-section {
+    right: 9.5%;
+    top: 16%;
+  }
+  .selected-design .private-section {
+    left: 1.5%;
+    top: 7%;
+  }
+  .private-key {
+    top: 20%; 
+    left: 20%;
+    right: 30%;
+    font-size: clamp(0.5rem, 0.6em, 0.5rem);
+  }
+  .wallet-address {
+    font-size: clamp(0.7rem, 1rem, 0.7rem );
+  }
+  .bch-amount {
+    margin-left: 12%;
+    margin-right: -10%;
+  }
+  .bip38-label {
+    margin-left: -7.7%;
+    margin-bottom: -8%;
+  }
+  .select-button {
+    font-size: 0.8rem;
+    line-height: 2%;
+    margin-bottom: 4%;
   }
 }
+
+@media (min-width: 425px) and (max-width: 767px) {
+  .landing-container {
+    width: 100vw;
+    max-width: 1000vw;
+  }
+  .landing-header {
+    width: 100vw;
+  }
+  .site-title {
+    font-size: 0.9rem;
+  }
+  .header-padding {
+    padding-top: 11%;
+  }
+  .header-padding-text {
+    font-size: 1.3rem;
+    line-height: 20%;
+    padding-bottom: 3%;
+  }
+  .wallet-description {
+    margin-top: 1%;
+    font-size: 1.2rem;
+  }
+  .wallet-container {
+    width: 70vw;
+  }
+  .step-label1 .step-text,
+  .step-label2 .step-text,
+  .step-label3 .step-text {
+    height: 3vh;
+    font-size: 0.8rem;
+  }
+  .design-grid {
+    padding-right: 20%;
+    padding-left: 1%;
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .select-button {
+    font-size: 0.6rem;
+    line-height: 2%;
+    margin-bottom: 1%;
+    top: 40%;
+    width: 40vw;
+    height: 1vh;
+  }
+  .customization-section .custom,
+  .customization-section .dropdown,
+  .customization-section .address,
+  .customization-section .input-bar,
+  .customization-section .encryption {
+    font-size: 0.5rem;
+  }
+  .dropdown-panel {
+    width: 60vw;
+    height: 23vh;
+  }
+  .dropdown-panel .strong,
+  .dropdown-panel .advanced-settings-row {
+    font-size: 0.5rem;
+    bottom: 10%;
+  }
+  .generate-btn {
+    font-size: 0.5rem;
+  }
+  .selected-design .private-section {
+    top: 8.9%;
+    left: 1.5%;
+  }
+  .selected-design .public-section {
+    top: 17%;
+    right: 16%;
+  }
+  .private-key {
+    font-size: 0.2rem;
+    top: 30%;
+    margin-left: -8%;
+    margin-right: 5%;
+  }
+  .wallet-address {
+    font-size: 0.3rem;
+    margin-left: -3%;
+    margin-top: 3%;
+  }
+  .bch-amount {
+    font-size: 0.4rem;
+    margin-left: -4%;
+    margin-bottom: 11%;
+  }
+  .bip38-label {
+    font-size: 0.2rem;
+    margin-left: -48.5%;
+    margin-bottom: -35%;
+    padding: 0.7% 0.7%;
+  }
+} 
+
 </style>
